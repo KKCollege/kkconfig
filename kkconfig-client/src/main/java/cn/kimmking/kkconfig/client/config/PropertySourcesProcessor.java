@@ -29,20 +29,23 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        ConfigurableEnvironment env = (ConfigurableEnvironment) environment;
-        if(env.getPropertySources().contains(KK_PROPERTY_SOURCES)) {
+        ConfigurableEnvironment ENV = (ConfigurableEnvironment) environment;
+        if(ENV.getPropertySources().contains(KK_PROPERTY_SOURCES)) {
             return;
         }
-        // 通过 http 请求，去kkconfig-sever获取配置 TODO
-        Map<String, String> config = new HashMap<>();
-        config.put("kk.a", "dev500");
-        config.put("kk.b", "b600");
-        config.put("kk.c", "c700");
-        KKConfigService configService = new KKConfigServiceImpl(config);
+
+        String app = ENV.getProperty("kkconfig.app", "app1");
+        String env = ENV.getProperty("kkconfig.env", "dev");
+        String ns = ENV.getProperty("kkconfig.ns", "public");
+        String configServer = ENV.getProperty("kkconfig.configServer", "http://localhost:9129");
+
+        ConfigMeta configMeta = new ConfigMeta(app, env, ns, configServer);
+
+        KKConfigService configService = KKConfigService.getDefault(configMeta);
         KKPropertySource propertySource = new KKPropertySource(KK_PROPERTY_SOURCE, configService);
         CompositePropertySource composite = new CompositePropertySource(KK_PROPERTY_SOURCES);
         composite.addPropertySource(propertySource);
-        env.getPropertySources().addFirst(composite);
+        ENV.getPropertySources().addFirst(composite);
     }
 
     @Override
