@@ -13,4 +13,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "kk")
 public class KKDemoConfig {
     String a;
+    String b;
 }

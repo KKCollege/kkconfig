@@ -4,15 +4,14 @@ import lombok.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * kk property sources processor.
@@ -21,11 +20,12 @@ import java.util.Map;
  * @create 2024/5/2 20:52
  */
 @Data
-public class PropertySourcesProcessor implements BeanFactoryPostProcessor, EnvironmentAware, PriorityOrdered {
+public class PropertySourcesProcessor implements BeanFactoryPostProcessor, ApplicationContextAware, EnvironmentAware, PriorityOrdered {
 
     private final static String KK_PROPERTY_SOURCES = "KKPropertySources";
     private final static String KK_PROPERTY_SOURCE  = "KKPropertySource";
     Environment environment;
+    ApplicationContext applicationContext;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -41,11 +41,12 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
 
         ConfigMeta configMeta = new ConfigMeta(app, env, ns, configServer);
 
-        KKConfigService configService = KKConfigService.getDefault(configMeta);
+        KKConfigService configService = KKConfigService.getDefault(applicationContext, configMeta);
         KKPropertySource propertySource = new KKPropertySource(KK_PROPERTY_SOURCE, configService);
         CompositePropertySource composite = new CompositePropertySource(KK_PROPERTY_SOURCES);
         composite.addPropertySource(propertySource);
         ENV.getPropertySources().addFirst(composite);
+
     }
 
     @Override

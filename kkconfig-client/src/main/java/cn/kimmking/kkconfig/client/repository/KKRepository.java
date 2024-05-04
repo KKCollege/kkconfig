@@ -1,6 +1,7 @@
 package cn.kimmking.kkconfig.client.repository;
 
 import cn.kimmking.kkconfig.client.config.ConfigMeta;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
 
@@ -12,10 +13,11 @@ import java.util.Map;
  */
 public interface KKRepository {
 
-    static KKRepository getDefault(ConfigMeta meta) {
-        return new KKRepositoryImpl(meta);
+    static KKRepository getDefault(ApplicationContext applicationContext, ConfigMeta meta) {
+        return new KKRepositoryImpl(applicationContext, meta);
     }
 
     Map<String, String> getConfig();
+    void addListener(KKRepositoryChangeListener listener);
 
 }
