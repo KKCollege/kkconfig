@@ -109,7 +109,7 @@ public class PlaceholderHelper {
                     stack.push(placeholderCandidate.substring(0, separatorIndex));
                     String defaultValuePart =
                             normalizeToPlaceholder(placeholderCandidate.substring(separatorIndex + VALUE_SEPARATOR.length()));
-                    if (!StringUtils.hasText(defaultValuePart)) {
+                    if (StringUtils.hasText(defaultValuePart)) {
                         stack.push(defaultValuePart);
                     }
                 }
@@ -169,5 +169,19 @@ public class PlaceholderHelper {
         }
         return -1;
     }
+
+    public static void main(String[] args) {
+        String strVal = "${some.key:other.key}";
+        System.out.println(new PlaceholderHelper().extractPlaceholderKeys(strVal));
+        strVal = "${some.key:${some.other.key:100}}";
+        System.out.println(new PlaceholderHelper().extractPlaceholderKeys(strVal));
+        strVal = "${${some.key}}";
+        System.out.println(new PlaceholderHelper().extractPlaceholderKeys(strVal));
+        strVal = "${${some.key:other.key}}";
+        System.out.println(new PlaceholderHelper().extractPlaceholderKeys(strVal));
+        strVal = "${${some.key}:${another.key}}";
+        System.out.println(new PlaceholderHelper().extractPlaceholderKeys(strVal));
+    }
+
 }
 
