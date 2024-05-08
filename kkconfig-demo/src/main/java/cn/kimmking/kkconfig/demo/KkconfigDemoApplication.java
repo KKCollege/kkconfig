@@ -6,6 +6,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
@@ -21,7 +23,7 @@ import java.util.Arrays;
 @RestController
 public class KkconfigDemoApplication {
 
-    @Value("${kk.a}")
+    @Value("${kk.a}.${kk.b}")
     private String a;
 
     @Value("${kk.b}")
@@ -34,7 +36,8 @@ public class KkconfigDemoApplication {
     Environment environment;
 
     public static void main(String[] args) {
-        SpringApplication.run(KkconfigDemoApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(KkconfigDemoApplication.class, args);
+        System.out.println(" &&&& ====> " + applicationContext.getBean(ConfigurationPropertiesRebinder.class));
     }
 
     @GetMapping("/demo")

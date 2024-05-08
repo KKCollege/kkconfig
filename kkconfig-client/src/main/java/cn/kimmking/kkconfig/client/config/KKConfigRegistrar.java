@@ -1,5 +1,6 @@
 package cn.kimmking.kkconfig.client.config;
 
+import cn.kimmking.kkconfig.client.value.SpringValueProcessor;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -20,19 +21,21 @@ public class KKConfigRegistrar implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
                                         BeanDefinitionRegistry registry) {
-        //ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
-        System.out.println("register PropertySourcesProcessor");
+        registerClass(registry, PropertySourcesProcessor.class);
+        registerClass(registry, SpringValueProcessor.class);
+    }
 
+    private static void registerClass(BeanDefinitionRegistry registry, Class<?> aClass) {
+        System.out.println("register " + aClass.getName());
         Optional<String> first = Arrays.stream(registry.getBeanDefinitionNames())
-                .filter(x -> PropertySourcesProcessor.class.getName().equals(x)).findFirst();
+                .filter(x -> aClass.getName().equals(x)).findFirst();
 
         if (first.isPresent()) {
             System.out.println("PropertySourcesProcessor already registered");
             return;
         }
-
         AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder
-                .genericBeanDefinition(PropertySourcesProcessor.class).getBeanDefinition();
-        registry.registerBeanDefinition(PropertySourcesProcessor.class.getName(), beanDefinition);
+                .genericBeanDefinition(aClass).getBeanDefinition();
+        registry.registerBeanDefinition(aClass.getName(), beanDefinition);
     }
 }
