@@ -19,6 +19,9 @@ import java.util.Map;
 public class KKConfigController {
 
     @Autowired
+    DistributedLocks locks;
+
+    @Autowired
     ConfigsMapper mapper;
     Map<String, Long> VERSIONS = new HashMap<>();
 
@@ -53,4 +56,10 @@ public class KKConfigController {
     public long version(String app, String env, String ns) {
         return VERSIONS.getOrDefault(app + "-" + env + "-" + ns, -1L);
     }
+
+    @GetMapping("/status")
+    public boolean status() {
+        return locks.getLocked().get();
+    }
+
 }

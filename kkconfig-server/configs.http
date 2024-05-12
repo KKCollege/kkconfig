@@ -1,5 +1,5 @@
 ### list
-GET http://localhost:9129/list?app=app1&env=dev&ns=public
+GET http://localhost:9130/list?app=app1&env=dev&ns=public
 
 ### update
 POST http://localhost:9129/update?app=app1&env=dev&ns=public
@@ -16,3 +16,25 @@ GET http://localhost:9129/version?app=app1&env=dev&ns=public
 
 ### demo 8888
 GET http://localhost:8888/demo
+
+
+### update kkrpc config
+POST http://localhost:9129/update?app=app1&env=dev&ns=public
+Content-Type: application/json
+
+{
+"kkrpc.provider.metas.dc": "sz",
+"kkrpc.provider.metas.gray": "false",
+"kkrpc.provider.metas.unit": "S008",
+"kkrpc.provider.metas.tc": 25
+}
+
+
+### get status
+GET http://localhost:9129/status
+
+### get status 9130
+GET http://localhost:9130/status
+
+### get status 9131
+GET http://localhost:9131/status
